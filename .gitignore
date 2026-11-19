@@ -1,0 +1,10 @@
+node_modules/
+dist/
+data/
+*.db
+*.db-*
+.env
+.DS_Store
+coverage/
+# the sample pack from Es Magico is confidential, keep it out of git
+sample-pack/
