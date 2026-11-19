@@ -87,11 +87,15 @@ export function isBlank(fields: string[]): boolean {
  * with an ID owns it, even if that row turns out to be invalid, so a later
  * row cannot quietly replace a broken one.
  */
+/** Who first used each student ID in the file. */
+export type SeenIds = Map<string, { line: number; name: string }>;
+
 export function validateRow(
   fields: string[],
   header: HeaderMap,
-  seenIds: Set<string>,
+  seenIds: SeenIds,
   today: string,
+  line: number,
   unterminatedQuote = false,
 ): RowOutcome {
   if (isBlank(fields)) return { kind: "skip" };
@@ -135,14 +139,17 @@ export function validateRow(
 
   const rawId = value("student_id");
   const key = idKey(rawId);
-  if (key && seenIds.has(key)) {
+  const owner = key ? seenIds.get(key) : undefined;
+  if (owner) {
+    const who = owner.name ? ` (${owner.name})` : "";
     problems.push({
       code: "DUPLICATE_ID",
       field: "student_id",
-      message: `Student ID ${key} already appeared earlier in this file. Only the first row for an ID is used.`,
+      message: `Student ID ${key} is already used on line ${owner.line}${who}. Only the first row with an ID is kept; give this student their own ID.`,
     });
+  } else if (key) {
+    seenIds.set(key, { line, name: value("full_name").replace(/\s+/g, " ") });
   }
-  if (key) seenIds.add(key);
 
   const missing = REQUIRED_COLUMNS.filter((c) => value(c) === "");
   for (const c of missing) {
@@ -153,7 +160,8 @@ export function validateRow(
     });
   }
 
-  const out: Partial<StudentRow> & { marks: Partial<Record<Subject, number>> } = { marks: {} };
+  const marks: Partial<Record<Subject, number>> = {};
+  const out: Partial<Omit<StudentRow, "marks">> = {};
   const check = <T>(c: Column, r: { ok: true; value: T } | { ok: false; problem: Problem }, set: (v: T) => void) => {
     if (value(c) === "") return;
     if (r.ok) set(r.value);
@@ -166,10 +174,10 @@ export function validateRow(
   check("date_of_birth", dateOfBirth(value("date_of_birth"), today), (v) => (out.dateOfBirth = v));
   check("grade_level", gradeLevel(value("grade_level")), (v) => (out.gradeLevel = v));
   check("section", section(value("section")), (v) => (out.section = v));
-  for (const s of SUBJECTS) check(s, mark(s, value(s)), (v) => (out.marks[s] = v));
+  for (const s of SUBJECTS) check(s, mark(s, value(s)), (v) => (marks[s] = v));
 
   if (problems.length > 0) {
     return { kind: "rejected", studentId: key || null, problems };
   }
-  return { kind: "accepted", row: out as StudentRow };
+  return { kind: "accepted", row: { ...out, marks } as StudentRow };
 }
