@@ -26,7 +26,7 @@ export function fixture(name: string): Buffer {
 
 export async function upload(app: App, fileName: string, content: string | Buffer, query = "") {
   const form = new FormData();
-  form.append("file", new Blob([content]), fileName);
+  form.append("file", new Blob([typeof content === "string" ? content : new Uint8Array(content)]), fileName);
   return app.inject({ method: "POST", url: `/api/imports${query}`, payload: form });
 }
 
