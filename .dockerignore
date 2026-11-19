@@ -1,0 +1,10 @@
+node_modules
+dist
+data
+sample-pack
+coverage
+docs
+tests
+.git
+.github
+*.md
