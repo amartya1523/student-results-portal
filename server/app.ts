@@ -29,7 +29,8 @@ export function todayIn(timeZone: string): string {
 }
 
 export async function buildApp(opts: AppOptions) {
-  const app = Fastify({ logger: opts.logger ?? false, disableRequestLogging: true, bodyLimit: 1024 * 1024 });
+  // In production only warnings and errors are logged, not every request.
+  const app = Fastify({ logger: opts.logger ? { level: "warn" } : false, bodyLimit: 1024 * 1024 });
   const today = opts.today ?? (() => todayIn(opts.timeZone ?? "Asia/Kolkata"));
   const maxUploadBytes = opts.maxUploadBytes ?? 50 * 1024 * 1024;
   const importer = createImporter(opts.db, { today });
