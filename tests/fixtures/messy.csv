@@ -1,0 +1,22 @@
+﻿ Student_ID ,FULL_NAME,email,date_of_birth,grade_level,section,maths,science,english,social_studies,second_language,house
+GOOD-001,Asha Verma,asha.verma@school.edu,2012-04-20,9,a,78,81.5,69,74,88,Blue
+GOOD-002,"Singh, Aarav",AARAV.SINGH@SCHOOL.EDU,20/04/2012,09,B,91,95,88.0,90,93,Red
+GOOD-003,   Zoë    D'Souza ,  zoe.dsouza@school.edu ,2014-02-28,  7 ,  c ,  55 ,61,47,52.5,40,Green
+
+GOOD-004,Bjørn Nair,bjorn.nair@school.edu,29/02/2012,8,F,32,40,45,50,55,Blue
+good-005,Ritu Kumārī,ritu.k@school.edu,2010-11-01,11,E,100,100.0,99.5,98,97,Red
+BAD-AGE,Old Student,old.student@school.edu,1970-01-01,11,A,60,60,60,60,60,Blue
+BAD-FUT,Future Kid,future.kid@school.edu,2031-05-01,1,A,60,60,60,60,60,Blue
+BAD-EMAIL,Ravi Shah,ravi@school,2013-03-03,6,B,60,60,60,60,60,Red
+BAD-MARK,Nisha Rao,nisha.rao@school.edu,2013-03-03,6,B,1e3,60,60,60,60,Red
+BAD-RANGE,Kiran Rao,kiran.rao@school.edu,2013-03-03,6,B,60,100.5,60,60,60,Red
+BAD-SEC,Meera Iyer,meera.iyer@school.edu,2013-03-03,6,Z,60,60,60,60,60,Red
+BAD-GRADE,Dev Pillai,dev.pillai@school.edu,2013-03-03,IX,B,60,60,60,60,60,Red
+BAD-DATE,Tara Das,tara.das@school.edu,31/02/2012,8,B,60,60,60,60,60,Red
+BAD-NAME,,no.name@school.edu,2013-03-03,6,B,60,60,60,60,60,Red
+BAD-SHORT,Arjun Mehta,arjun.mehta@school.edu,2013-03-03,6,B,60,60,60,60,Red
+BAD-LONG,Arjun Mehta,arjun.mehta@school.edu,2013-03-03,6,B,60,60,60,60,60,Red,extra
+GOOD-001,Someone Else,someone.else@school.edu,2012-04-20,9,A,50,50,50,50,50,Blue
+GOOD-006,Sneha Kapoor,asha.verma@school.edu,2015-06-06,5,D,66,66,66,66,66,Green
+,,,,,,,,,,,
+GOOD-007,"O’Brien, Liam",liam.obrien@school.edu,2009-12-31,12,d,33,33,33,33,33,Green
