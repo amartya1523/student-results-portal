@@ -10,7 +10,10 @@ import { DatabaseSync } from "node:sqlite";
 
 const SCHEMA = /* sql */ `
 PRAGMA journal_mode = WAL;
+PRAGMA synchronous = NORMAL;   -- safe with WAL, much faster commits
 PRAGMA foreign_keys = ON;
+PRAGMA cache_size = -32000;    -- ~32 MB page cache: a whole school stays in memory
+PRAGMA temp_store = MEMORY;
 
 CREATE TABLE IF NOT EXISTS imports (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
