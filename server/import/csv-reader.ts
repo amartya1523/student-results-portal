@@ -27,7 +27,7 @@ export class FileEncodingError extends Error {}
 const RAW_LIMIT = 500;
 
 export async function* readCsv(
-  source: AsyncIterable<Uint8Array | string>,
+  source: AsyncIterable<Uint8Array | string> | Iterable<Uint8Array | string>,
 ): AsyncGenerator<CsvRecord> {
   const decoder = new TextDecoder("utf-8", { fatal: true, ignoreBOM: false });
 
