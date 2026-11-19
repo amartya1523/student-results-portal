@@ -35,6 +35,7 @@ export async function* readCsv(
   let field = "";
   let raw = "";
   let inQuotes = false;
+  let quotePending = false; // inside quotes, just saw '"', next char decides
   let fieldStarted = false; // saw any char for this field (used for quote rules)
   let line = 1;
   let recordLine = 1;
@@ -68,23 +69,21 @@ export async function* readCsv(
         if (ch === "\n") continue; // second half of \r\n, already counted
       }
 
+      if (quotePending) {
+        // We saw a quote inside a quoted field. Another quote means an
+        // escaped literal quote; anything else means the field was closed.
+        quotePending = false;
+        if (ch === '"') {
+          field += '"';
+          pushRaw('"');
+          continue;
+        }
+        inQuotes = false;
+      }
+
       if (inQuotes) {
         if (ch === '"') {
-          if (text[i + 1] === '"') {
-            field += '"';
-            pushRaw('""');
-            i++;
-            continue;
-          }
-          if (i + 1 === text.length) {
-            // Could be an escaped quote split across chunks. Peek lazily:
-            // treat as closing quote; a following '"' re-opens via the
-            // unquoted branch below which appends a literal quote.
-            inQuotes = false;
-            pushRaw('"');
-            continue;
-          }
-          inQuotes = false;
+          quotePending = true;
           pushRaw('"');
           continue;
         }
@@ -107,9 +106,8 @@ export async function* readCsv(
           pushRaw('"');
           continue;
         }
-        // A quote right after a closing quote is an escaped quote whose two
-        // halves landed in different chunks. Anywhere else it is a stray
-        // quote in an unquoted field: keep it literally, like spreadsheets do.
+        // A stray quote in the middle of an unquoted field: keep it
+        // literally, the way spreadsheets do.
         field += '"';
         pushRaw('"');
         continue;
@@ -160,6 +158,12 @@ export async function* readCsv(
     throw new FileEncodingError(
       "The file ends with a broken character. Save it again as “CSV UTF-8” and re-upload.",
     );
+  }
+
+  // A quote at the very end of the file closes its field.
+  if (quotePending) {
+    quotePending = false;
+    inQuotes = false;
   }
 
   // Last record without a trailing newline.
